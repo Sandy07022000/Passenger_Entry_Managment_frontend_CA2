@@ -1,0 +1,10 @@
+<h2>Delete Passenger</h2>
+
+<!-- Vulnerability: No validation on input -->
+<input placeholder="Passenger ID" #id>
+
+<!-- Vulnerability: Deletes without confirmation -->
+<button (click)="delete(id.value)">Delete</button>
+
+<!-- Vulnerability: Exposes raw backend response -->
+<p>{{ result }}</p>

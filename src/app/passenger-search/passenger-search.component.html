@@ -1,0 +1,22 @@
+<h2>Read Passenger</h2>
+
+<!-- Vulnerability: Unvalidated user input -->
+<input [(ngModel)]="query" placeholder="Enter Passenger ID">
+
+<button (click)="search()">Search</button>
+
+<div *ngIf="results">
+  <h3>Results:</h3>
+
+  <!-- Vulnerability: Angular interpolation shows untrusted data (XSS) -->
+    <p>Full Name: {{ results.fullName }}</p>
+    <p>Passport Number: {{ results.passportNumber }}</p>
+    <p>Visa Type: {{ results.visaType }}</p>
+    <p>Nationality: {{ results.nationality }}</p>
+    <p>Arrival Date: {{ results.arrivalDate }}</p>
+    <p>Arrival Year: {{ results.arrivalYear }}</p>
+    <p>Purpose Of Visit: {{ results.purposeOfVisit }}</p>
+    <p>Officer ID: {{ results.officerId }}</p>
+</div>
+
+

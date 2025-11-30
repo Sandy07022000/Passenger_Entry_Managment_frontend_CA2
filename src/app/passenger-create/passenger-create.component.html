@@ -1,0 +1,32 @@
+<!-- Vulnerability: No input validation -->
+<!-- Vulnerability: Accepts dangerous XSS / SQLi payloads -->
+
+<h2>Create Passenger</h2>
+
+<form (ngSubmit)="create()">
+
+  <!-- No validation attributes used -->
+  <input [(ngModel)]="fullName" name="fullName" placeholder="Full Name">
+
+  <input [(ngModel)]="passportNumber" name="passportNumber" placeholder="Passport Number">
+
+  <input [(ngModel)]="visaType" name="visaType" placeholder="Visa Type">
+
+  <input [(ngModel)]="nationality" name="nationality" placeholder="Nationality">
+
+  <input [(ngModel)]="arrivalDate" name="arrivalDate" placeholder="Arrival Date" type="date">
+
+  <input [(ngModel)]="arrivalYear" name="arrivalYear" placeholder="Arrival Year" type="number">
+
+  <input [(ngModel)]="purposeOfVisit" name="purposeOfVisit" placeholder="Purpose Of Visit">
+
+  <input [(ngModel)]="officerId" name="officerId" placeholder="Officer ID" type="number">
+
+  <button type="submit">Create</button>
+</form>
+
+<!-- Vulnerability: Displays raw API response (info disclosure) -->
+<div *ngIf="response">
+  <h3>Response:</h3>
+  <pre>{{ response }}</pre>
+</div>
