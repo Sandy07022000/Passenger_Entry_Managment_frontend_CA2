@@ -1,0 +1,30 @@
+<h2>All Passengers</h2>
+
+<button (click)="loadPassengers()">Load All</button>
+
+<table *ngIf="passengers.length > 0" border="1" style="margin-top: 15px;">
+  <tr>
+    <th>ID</th>
+    <th>Full Name</th>
+    <th>Passport</th>
+    <th>Visa</th>
+    <th>Nationality</th>
+    <th>Arrival</th>
+    <th>Year</th>
+    <th>Purpose</th>
+    <th>Officer</th>
+  </tr>
+
+  <!-- Vulnerability: Directly printing untrusted backend data (XSS risk) -->
+  <tr *ngFor="let p of passengers">
+    <td>{{ p.passengerId }}</td>
+    <td>{{ p.fullName }}</td>
+    <td>{{ p.passportNumber }}</td>
+    <td>{{ p.visaType }}</td>
+    <td>{{ p.nationality }}</td>
+    <td>{{ p.arrivalDate }}</td>
+    <td>{{ p.arrivalYear }}</td>
+    <td>{{ p.purposeOfVisit }}</td>
+    <td>{{ p.officerId }}</td>
+  </tr>
+</table>

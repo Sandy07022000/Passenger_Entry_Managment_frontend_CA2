@@ -1,0 +1,28 @@
+<h2>Update Passenger</h2>
+
+<!-- Vulnerability: No validation on input -->
+<input [(ngModel)]="id" placeholder="Passenger ID">
+
+<button (click)="search()">Load Details</button>
+
+<div *ngIf="passenger">
+  <h3>Edit Details:</h3>
+
+  <!-- Vulnerability: XSS risk (unsanitized user input reflects in fields) -->
+  <input [(ngModel)]="passenger.fullName" placeholder="Full Name">
+  <input [(ngModel)]="passenger.passportNumber" placeholder="Passport Number">
+  <input [(ngModel)]="passenger.visaType" placeholder="Visa Type">
+  <input [(ngModel)]="passenger.nationality" placeholder="Nationality">
+  <input [(ngModel)]="passenger.arrivalDate" type="date" placeholder="Arrival Date">
+  <input [(ngModel)]="passenger.arrivalYear" type="number" placeholder="Arrival Year">
+  <input [(ngModel)]="passenger.purposeOfVisit" placeholder="Purpose Of Visit">
+  <input [(ngModel)]="passenger.officerId" type="number" placeholder="Officer ID">
+
+  <button (click)="update()">Update</button>
+</div>
+
+<!-- Vulnerability: raw backend data displayed -->
+<div *ngIf="response">
+  <h3>Response:</h3>
+  <pre>{{ response }}</pre>
+</div>
