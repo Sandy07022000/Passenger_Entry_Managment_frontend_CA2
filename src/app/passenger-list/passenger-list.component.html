@@ -2,6 +2,7 @@
 
 <button (click)="loadPassengers()">Load All</button>
 
+<!-- Injection safe now -->
 <table *ngIf="passengers.length > 0" border="1" style="margin-top: 15px;">
   <tr>
     <th>ID</th>
@@ -15,7 +16,7 @@
     <th>Officer</th>
   </tr>
 
-  <!-- Vulnerability: Directly printing untrusted backend data (XSS risk) -->
+  <!-- Injection-safe-->
   <tr *ngFor="let p of passengers">
     <td>{{ p.passengerId }}</td>
     <td>{{ p.fullName }}</td>

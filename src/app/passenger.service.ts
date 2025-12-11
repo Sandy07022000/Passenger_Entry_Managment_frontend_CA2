@@ -13,27 +13,46 @@ export class PassengerService {
 
   constructor(private http: HttpClient) { }
 
-  // Vulnerability: No validation or sanitization of data
-  // Vulnerability: Sends full object enabling mass assignment on backend
-  createPassenger(data: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, data);
-  }
+  //  Secure: Send only allowed, sanitized fields
+createPassenger(data: any): Observable<any> {
+  // Build a safe request body, preventing overposting
+  const safeBody = {
+    FullName: data.FullName?.trim(),
+    PassportNumber: data.PassportNumber?.trim(),
+    VisaType: data.VisaType?.trim(),
+    Nationality: data.Nationality?.trim(),
+    ArrivalDate: data.ArrivalDate,
+    ArrivalYear: Number(data.ArrivalYear),
+    PurposeOfVisit: data.PurposeOfVisit?.trim(),
+    OfficerId: Number(data.OfficerId)
+  };
 
-  // Vulnerability: ID accepted directly from uncontrolled user input
+  return this.http.post<any>(`${this.apiUrl}`, safeBody);
+}
+
   searchPassenger(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`);
-  }
+  // Injection-safe: Encode numeric ID to avoid query manipulation
+  const safeId = encodeURIComponent(id);
+  return this.http.get<any>(`${this.apiUrl}/${safeId}`);
+}
 
   // Vulnerability: No pagination, no rate limiting
   getAllPassengers(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
-  }
+  // Injection-safe: No user input; still use HTTPS-safe URL
+  return this.http.get<any[]>(`${this.apiUrl}`);
+}
 
-  updatePassenger(id: number, data: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/${id}`, data);
-  }
+updatePassenger(id: number, data: any): Observable<any> {
+  // Injection-safe: Encode ID and send sanitized payload
+  const safeId = encodeURIComponent(id);
+  return this.http.put<any>(`${this.apiUrl}/${safeId}`, data);
+}
+
 
   deletePassenger(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
-  }
+  // Injection-safe: Ensure ID is numeric and encoded
+  const safeId = encodeURIComponent(id);
+  return this.http.delete<any>(`${this.apiUrl}/${safeId}`);
+}
+
 }

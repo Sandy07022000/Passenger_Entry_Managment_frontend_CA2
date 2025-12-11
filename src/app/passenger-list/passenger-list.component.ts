@@ -17,9 +17,26 @@ export class PassengerListComponent {
   constructor(private api: PassengerService) {}
 
   loadPassengers() {
-    // Vulnerability: No error handling or sanitization
-    this.api.getAllPassengers().subscribe((res: any[]) => {
-      this.passengers = res;
+    // Injection Fix: No user input used in query, but added safe handling
+    this.api.getAllPassengers().subscribe({
+      next: (res: any[]) => {
+        // Sanitize or safely map only expected fields
+        this.passengers = res.map(p => ({
+          passengerId: p.passengerId,
+          fullName: p.fullName,
+          passportNumber: p.passportNumber,
+          visaType: p.visaType,
+          nationality: p.nationality,
+          arrivalDate: p.arrivalDate,
+          arrivalYear: p.arrivalYear,
+          purposeOfVisit: p.purposeOfVisit,
+          officerId: p.officerId
+        }));
+      },
+      error: err => {
+        console.error('Error loading passengers:', err);
+        alert('Failed to load passengers.');
+      }
     });
   }
 }

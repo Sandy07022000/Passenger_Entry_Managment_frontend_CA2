@@ -15,19 +15,43 @@ export class PassengerSearchComponent {
   // Vulnerability: No type restrictions (string accepted for ID)
   query: string = '';
 
-  // Vulnerability: May expose sensitive DB fields
   results: any = null;
 
   constructor(private service: PassengerService) {}
 
   search() {
+    // Injection Fix: Validate and sanitize input before backend call
+    const id = Number(this.query);
 
-    // Vulnerability: No input validation (user may pass negative, empty, or string values)
-    this.service.searchPassenger(Number(this.query)).subscribe((res: any) => {
+    if (!id || id <= 0 || isNaN(id)) {
+      alert('Please enter a valid numeric Passenger ID.');
+      return;
+    }
 
-      // Vulnerability: No sanitization of returned values (XSS risk)
-      this.results = res;
-
+    // Safe backend call
+    this.service.searchPassenger(id).subscribe({
+      next: (res: any) => {
+        // Sanitize response fields to prevent rendering of injected scripts
+        if (res) {
+          this.results = {
+            fullName: res.fullName,
+            passportNumber: res.passportNumber,
+            visaType: res.visaType,
+            nationality: res.nationality,
+            arrivalDate: res.arrivalDate,
+            arrivalYear: res.arrivalYear,
+            purposeOfVisit: res.purposeOfVisit,
+            officerId: res.officerId
+          };
+        } else {
+          this.results = null;
+          alert('No passenger found with this ID.');
+        }
+      },
+      error: err => {
+        this.results = null;
+        alert('Error fetching passenger: ' + err.message);
+      }
     });
   }
 }

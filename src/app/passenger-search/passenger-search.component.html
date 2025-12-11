@@ -1,22 +1,26 @@
-<h2>Read Passenger</h2>
+<h2>Search Passenger</h2>
 
-<!-- Vulnerability: Unvalidated user input -->
-<input [(ngModel)]="query" placeholder="Enter Passenger ID">
+<!-- Injection Fix: Input restricted to numbers only -->
+<input
+  [(ngModel)]="query"
+  type="number"
+  min="1"
+  placeholder="Enter Passenger ID"
+  required
+/>
 
 <button (click)="search()">Search</button>
 
 <div *ngIf="results">
   <h3>Results:</h3>
 
-  <!-- Vulnerability: Angular interpolation shows untrusted data (XSS) -->
-    <p>Full Name: {{ results.fullName }}</p>
-    <p>Passport Number: {{ results.passportNumber }}</p>
-    <p>Visa Type: {{ results.visaType }}</p>
-    <p>Nationality: {{ results.nationality }}</p>
-    <p>Arrival Date: {{ results.arrivalDate }}</p>
-    <p>Arrival Year: {{ results.arrivalYear }}</p>
-    <p>Purpose Of Visit: {{ results.purposeOfVisit }}</p>
-    <p>Officer ID: {{ results.officerId }}</p>
+  <!-- issue fixed: Angular interpolation automatically escapes malicious content -->
+  <p><strong>Full Name:</strong> {{ results.fullName }}</p>
+  <p><strong>Passport Number:</strong> {{ results.passportNumber }}</p>
+  <p><strong>Visa Type:</strong> {{ results.visaType }}</p>
+  <p><strong>Nationality:</strong> {{ results.nationality }}</p>
+  <p><strong>Arrival Date:</strong> {{ results.arrivalDate }}</p>
+  <p><strong>Arrival Year:</strong> {{ results.arrivalYear }}</p>
+  <p><strong>Purpose Of Visit:</strong> {{ results.purposeOfVisit }}</p>
+  <p><strong>Officer ID:</strong> {{ results.officerId }}</p>
 </div>
-
-

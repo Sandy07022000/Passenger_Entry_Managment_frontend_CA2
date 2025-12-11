@@ -1,32 +1,86 @@
-<!-- Vulnerability: No input validation -->
-<!-- Vulnerability: Accepts dangerous XSS / SQLi payloads -->
-
 <h2>Create Passenger</h2>
 
-<form (ngSubmit)="create()">
+<form #createForm="ngForm" (ngSubmit)="create()" novalidate>
 
-  <!-- No validation attributes used -->
-  <input [(ngModel)]="fullName" name="fullName" placeholder="Full Name">
+  <label>Full Name</label>
+  <input
+    [(ngModel)]="fullName"
+    name="fullName"
+    required
+    maxlength="100"
+    placeholder="Full Name" />
+  <div *ngIf="createForm.submitted && !fullName" class="error-msg">
+    Full Name is required.
+  </div>
 
-  <input [(ngModel)]="passportNumber" name="passportNumber" placeholder="Passport Number">
+  <label>Passport Number</label>
+  <input
+    [(ngModel)]="passportNumber"
+    name="passportNumber"
+    required
+    maxlength="20"
+    placeholder="Passport Number" />
+  <div *ngIf="createForm.submitted && !passportNumber" class="error-msg">
+    Passport Number is required.
+  </div>
 
-  <input [(ngModel)]="visaType" name="visaType" placeholder="Visa Type">
+  <label>Visa Type</label>
+  <input
+    [(ngModel)]="visaType"
+    name="visaType"
+    maxlength="50"
+    placeholder="Visa Type" />
 
-  <input [(ngModel)]="nationality" name="nationality" placeholder="Nationality">
+  <label>Nationality</label>
+  <input
+    [(ngModel)]="nationality"
+    name="nationality"
+    maxlength="50"
+    placeholder="Nationality" />
 
-  <input [(ngModel)]="arrivalDate" name="arrivalDate" placeholder="Arrival Date" type="date">
+  <label>Arrival Date</label>
+  <input
+    [(ngModel)]="arrivalDate"
+    name="arrivalDate"
+    type="date" />
 
-  <input [(ngModel)]="arrivalYear" name="arrivalYear" placeholder="Arrival Year" type="number">
+  <label>Arrival Year</label>
+  <input
+    [(ngModel)]="arrivalYear"
+    name="arrivalYear"
+    type="number"
+    min="1900"
+    max="2100"
+    placeholder="Arrival Year" />
+  <div
+    *ngIf="createForm.submitted && (+arrivalYear < 1900 || +arrivalYear > 2100)"
+    class="error-msg">
+    Arrival Year must be between 1900 and 2100.
+  </div>
 
-  <input [(ngModel)]="purposeOfVisit" name="purposeOfVisit" placeholder="Purpose Of Visit">
+  <label>Purpose Of Visit</label>
+  <input
+    [(ngModel)]="purposeOfVisit"
+    name="purposeOfVisit"
+    maxlength="200"
+    placeholder="Purpose Of Visit" />
 
-  <input [(ngModel)]="officerId" name="officerId" placeholder="Officer ID" type="number">
+  <label>Officer ID</label>
+  <input
+    [(ngModel)]="officerId"
+    name="officerId"
+    type="number"
+    min="1"
+    placeholder="Officer ID" />
+  <div
+    *ngIf="createForm.submitted && (!officerId || +officerId < 1)"
+    class="error-msg">
+    Officer ID must be a valid number greater than 0.
+  </div>
 
   <button type="submit">Create</button>
 </form>
 
-<!-- Vulnerability: Displays raw API response (info disclosure) -->
-<div *ngIf="response">
-  <h3>Response:</h3>
-  <pre>{{ response }}</pre>
+<div *ngIf="response" class="success-msg">
+  <h3>{{ response }}</h3>
 </div>

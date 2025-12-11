@@ -18,14 +18,23 @@ export class PassengerDeleteComponent {
   constructor(private api: PassengerService) {}
 
   delete(id: string) {
+    // Injection fix: Sanitize and validate input
+    const passengerId = Number(id);
 
-    // Vulnerability: No input validation or sanitization
-    // Vulnerability: Directly converts string to number, allowing invalid or malicious IDs
-    this.api.deletePassenger(parseInt(id)).subscribe(res => {
+    if (!passengerId || passengerId <= 0 || isNaN(passengerId)) {
+      alert('Please enter a valid numeric Passenger ID.');
+      return;
+    }
 
-      // Vulnerability: Shows full raw response
-      this.result = JSON.stringify(res);
-
+    // NOTE: Confirmation dialog still missing (will fix later under Broken Access Control / Insecure Design)
+    this.api.deletePassenger(passengerId).subscribe({
+      next: () => {
+        // Avoid raw backend JSON (i will improve info disclosure later)
+        this.result = `Passenger with ID ${passengerId} deleted successfully.`;
+      },
+      error: err => {
+        this.result = 'Error deleting passenger: ' + err.message;
+      }
     });
   }
 }

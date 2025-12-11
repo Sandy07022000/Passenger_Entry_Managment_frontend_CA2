@@ -1,10 +1,16 @@
 <h2>Delete Passenger</h2>
 
-<!-- Vulnerability: No validation on input -->
-<input placeholder="Passenger ID" #id>
+<!-- Injection fix: added numeric field with validation -->
+<input
+  type="number"
+  min="1"
+  placeholder="Passenger ID"
+  #id
+  required
+/>
 
 <!-- Vulnerability: Deletes without confirmation -->
 <button (click)="delete(id.value)">Delete</button>
 
-<!-- Vulnerability: Exposes raw backend response -->
-<p>{{ result }}</p>
+<!-- Safer response message -->
+<p *ngIf="result">{{ result }}</p>
