@@ -1,37 +1,5 @@
-<div class="app-container">
-  <h1>{{ title }}</h1>
+<app-navbar></app-navbar>
 
-  <nav>
-    <button (click)="navigate('create')">Create Passenger</button>
-    <button (click)="navigate('read')">Read Passenger</button>
-    <button (click)="navigate('update')">Update Passenger</button>
-    <button (click)="navigate('delete')">Delete Passenger</button>
-    <button (click)="navigate('list')">List Passengers</button>
-  </nav>
-
-  <div [ngSwitch]="current">
-    <div *ngSwitchCase="'create'">
-      <app-passenger-create></app-passenger-create>
-    </div>
-
-    <div *ngSwitchCase="'read'">
-      <app-passenger-search></app-passenger-search>
-    </div>
-
-    <div *ngSwitchCase="'update'">
-      <app-passenger-update></app-passenger-update>
-    </div>
-
-    <div *ngSwitchCase="'delete'">
-      <app-passenger-delete></app-passenger-delete>
-    </div>
-
-    <div *ngSwitchCase="'list'">
-      <app-passenger-list></app-passenger-list>
-    </div>
-
-    <div *ngSwitchDefault>
-      <p>Select an action from above.</p>
-    </div>
-  </div>
+<div class="content-container">
+  <router-outlet></router-outlet>
 </div>

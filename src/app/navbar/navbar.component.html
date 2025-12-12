@@ -1,0 +1,24 @@
+<nav class="navbar">
+  <div class="nav-left">
+    <span class="brand">Passenger Management System</span>
+  </div>
+  
+<div class="nav-center" *ngIf="auth.isAuthenticated(); else guestLinks">
+  <a *ngIf="auth.isAdmin()" routerLink="/create" routerLinkActive="active">Create</a>
+  <a routerLink="/search" routerLinkActive="active">Search</a>
+  <a *ngIf="auth.isAdmin()" routerLink="/update" routerLinkActive="active">Update</a>
+  <a *ngIf="auth.isAdmin()" routerLink="/delete" routerLinkActive="active">Delete</a>
+  <a routerLink="/list" routerLinkActive="active">List</a>
+</div>
+
+
+  <div class="nav-right" *ngIf="auth.isAuthenticated(); else guestLinks">
+    <button class="logout-btn" (click)="logout()">Logout</button>
+  </div>
+
+  <ng-template #guestLinks>
+    <div class="nav-right">
+      <a routerLink="/">Login</a>
+    </div>
+  </ng-template>
+</nav>
