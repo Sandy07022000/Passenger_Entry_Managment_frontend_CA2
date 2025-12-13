@@ -30,8 +30,13 @@ export class LoginComponent {
       next: () => {
         this.message = 'Login successful. Redirecting...';
         // Redirect after short delay
+        const role = this.auth.getRole();
         setTimeout(() => {
-          this.router.navigate(['/create']); // Default page after login
+          if (role === 'Admin') {
+            this.router.navigate(['/create']); // admin default
+          } else {
+            this.router.navigate(['/list']); // user default
+          }
         }, 1000);
       },
       error: (err) => {

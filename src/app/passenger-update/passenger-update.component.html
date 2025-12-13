@@ -15,14 +15,14 @@
   <h3>Edit Details:</h3>
 
   <!--Angular auto-escapes input bindings -->
-  <input [(ngModel)]="passenger.fullName" placeholder="Full Name" required />
-  <input [(ngModel)]="passenger.passportNumber" placeholder="Passport Number" required />
-  <input [(ngModel)]="passenger.visaType" placeholder="Visa Type" />
-  <input [(ngModel)]="passenger.nationality" placeholder="Nationality" />
-  <input [(ngModel)]="passenger.arrivalDate" type="date" placeholder="Arrival Date" />
-  <input [(ngModel)]="passenger.arrivalYear" type="number" placeholder="Arrival Year" min="1900" max="2100" />
-  <input [(ngModel)]="passenger.purposeOfVisit" placeholder="Purpose Of Visit" />
-  <input [(ngModel)]="passenger.officerId" type="number" placeholder="Officer ID" min="1" />
+  <input [(ngModel)]="passenger.FullName" placeholder="Full Name" required />
+  <input [(ngModel)]="passenger.PassportNumber" placeholder="Passport Number" required />
+  <input [(ngModel)]="passenger.VisaType" placeholder="Visa Type" />
+  <input [(ngModel)]="passenger.Nationality" placeholder="Nationality" />
+  <input [(ngModel)]="passenger.ArrivalDate" type="date" placeholder="Arrival Date" />
+  <input [(ngModel)]="passenger.ArrivalYear" type="number" placeholder="Arrival Year" min="1900" max="2100" />
+  <input [(ngModel)]="passenger.PurposeOfVisit" placeholder="Purpose Of Visit" />
+  <input [(ngModel)]="passenger.OfficerId" type="number" placeholder="Officer ID" min="1" />
 
   <button (click)="update()">Update</button>
 </div>

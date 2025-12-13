@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PassengerService } from '../passenger.service';
+import { PassengerService, Passenger } from '../passenger.service';
 
 @Component({
   selector: 'app-passenger-list',
@@ -9,33 +9,24 @@ import { PassengerService } from '../passenger.service';
   templateUrl: './passenger-list.component.html',
   styleUrls: ['./passenger-list.component.css']
 })
-export class PassengerListComponent {
+export class PassengerListComponent implements OnInit {
 
-  // Vulnerability: Storing full DB records including sensitive data
-  passengers: any[] = [];
+  passengers: Passenger[] = [];
+  message = '';
 
-  constructor(private api: PassengerService) {}
+  constructor(private passengerService: PassengerService) {}
 
+  ngOnInit() {
+    this.loadPassengers();
+  }
   loadPassengers() {
     // Injection Fix: No user input used in query, but added safe handling
-    this.api.getAllPassengers().subscribe({
-      next: (res: any[]) => {
-        // Sanitize or safely map only expected fields
-        this.passengers = res.map(p => ({
-          passengerId: p.passengerId,
-          fullName: p.fullName,
-          passportNumber: p.passportNumber,
-          visaType: p.visaType,
-          nationality: p.nationality,
-          arrivalDate: p.arrivalDate,
-          arrivalYear: p.arrivalYear,
-          purposeOfVisit: p.purposeOfVisit,
-          officerId: p.officerId
-        }));
+    this.passengerService.getAll().subscribe({
+      next: (data) => {
+        this.passengers = data;
       },
-      error: err => {
-        console.error('Error loading passengers:', err);
-        alert('Failed to load passengers.');
+      error: (err) => {
+        this.message = 'Error loading passengers: ' + err.message;
       }
     });
   }

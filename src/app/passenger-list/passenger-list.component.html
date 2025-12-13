@@ -1,31 +1,37 @@
-<h2>All Passengers</h2>
+<h2>Passenger List</h2>
 
-<button (click)="loadPassengers()">Load All</button>
+<p *ngIf="message" class="error">{{ message }}</p>
 
 <!-- Injection safe now -->
-<table *ngIf="passengers.length > 0" border="1" style="margin-top: 15px;">
-  <tr>
-    <th>ID</th>
-    <th>Full Name</th>
-    <th>Passport</th>
-    <th>Visa</th>
-    <th>Nationality</th>
-    <th>Arrival</th>
-    <th>Year</th>
-    <th>Purpose</th>
-    <th>Officer</th>
-  </tr>
-
-  <!-- Injection-safe-->
-  <tr *ngFor="let p of passengers">
-    <td>{{ p.passengerId }}</td>
-    <td>{{ p.fullName }}</td>
-    <td>{{ p.passportNumber }}</td>
-    <td>{{ p.visaType }}</td>
-    <td>{{ p.nationality }}</td>
-    <td>{{ p.arrivalDate }}</td>
-    <td>{{ p.arrivalYear }}</td>
-    <td>{{ p.purposeOfVisit }}</td>
-    <td>{{ p.officerId }}</td>
-  </tr>
+<table *ngIf="passengers.length > 0; else noData">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Full Name</th>
+      <th>Passport</th>
+      <th>Visa Type</th>
+      <th>Nationality</th>
+      <th>Arrival Date</th>
+      <th>Arrival Year</th>
+      <th>Purpose Of Visit</th>
+      <th>Officer ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of passengers">
+      <td>{{ p.PassengerId }}</td>
+      <td>{{ p.FullName }}</td>
+      <td>{{ p.PassportNumber }}</td>
+      <td>{{ p.VisaType }}</td>
+      <td>{{ p.Nationality }}</td>
+      <td>{{ p.ArrivalDate }}</td>
+      <td>{{ p.ArrivalYear }}</td>
+      <td>{{ p.PurposeOfVisit }}</td>
+      <td>{{ p.OfficerId }}</td>
+    </tr>
+  </tbody>
 </table>
+
+<ng-template #noData>
+  <p>No passengers found.</p>
+</ng-template>

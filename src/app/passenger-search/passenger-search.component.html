@@ -1,26 +1,24 @@
 <h2>Search Passenger</h2>
 
 <!-- Injection Fix: Input restricted to numbers only -->
-<input
-  [(ngModel)]="query"
-  type="number"
-  min="1"
-  placeholder="Enter Passenger ID"
-  required
-/>
 
+<input [(ngModel)]="passengerId" type="number" placeholder="Passenger ID" />
 <button (click)="search()">Search</button>
 
-<div *ngIf="results">
-  <h3>Results:</h3>
+<p *ngIf="message" class="error">{{ message }}</p>
 
-  <!-- issue fixed: Angular interpolation automatically escapes malicious content -->
-  <p><strong>Full Name:</strong> {{ results.fullName }}</p>
-  <p><strong>Passport Number:</strong> {{ results.passportNumber }}</p>
-  <p><strong>Visa Type:</strong> {{ results.visaType }}</p>
-  <p><strong>Nationality:</strong> {{ results.nationality }}</p>
-  <p><strong>Arrival Date:</strong> {{ results.arrivalDate }}</p>
-  <p><strong>Arrival Year:</strong> {{ results.arrivalYear }}</p>
-  <p><strong>Purpose Of Visit:</strong> {{ results.purposeOfVisit }}</p>
-  <p><strong>Officer ID:</strong> {{ results.officerId }}</p>
+<!-- issue fixed: Angular interpolation automatically escapes malicious content -->
+<div *ngIf="passenger">
+  <h3>Passenger Details</h3>
+  <table>
+    <tr><th>ID</th><td>{{ passenger.PassengerId }}</td></tr>
+    <tr><th>Full Name</th><td>{{ passenger.FullName }}</td></tr>
+    <tr><th>Passport</th><td>{{ passenger.PassportNumber }}</td></tr>
+    <tr><th>Visa Type</th><td>{{ passenger.VisaType }}</td></tr>
+    <tr><th>Nationality</th><td>{{ passenger.Nationality }}</td></tr>
+    <tr><th>Arrival Date</th><td>{{ passenger.ArrivalDate }}</td></tr>
+    <tr><th>Arrival Year</th><td>{{ passenger.ArrivalYear }}</td></tr>
+    <tr><th>Purpose Of Visit</th><td>{{ passenger.PurposeOfVisit }}</td></tr>
+    <tr><th>Officer ID</th><td>{{ passenger.OfficerId }}</td></tr>
+  </table>
 </div>
