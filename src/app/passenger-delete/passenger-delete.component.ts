@@ -2,23 +2,24 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PassengerService } from '../passenger.service';
+import { ReauthComponent } from '../reauth.component';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-passenger-delete',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReauthComponent],
   templateUrl: './passenger-delete.component.html',
   styleUrls: ['./passenger-delete.component.css']
 })
 export class PassengerDeleteComponent {
-
-  // Vulnerability: Stores raw API response (info disclosure)
   result: any = "";
+  showReauth: boolean = false;
+  pendingDeleteId: number | null = null;
 
-  constructor(private api: PassengerService) {}
+  constructor(private api: PassengerService, private auth: AuthService) {}
 
   delete(id: string) {
-    // Injection fix: Sanitize and validate input
     const passengerId = Number(id);
 
     if (!passengerId || passengerId <= 0 || isNaN(passengerId)) {
@@ -26,15 +27,33 @@ export class PassengerDeleteComponent {
       return;
     }
 
-    // NOTE: Confirmation dialog still missing (will fix later under Broken Access Control / Insecure Design)
-    this.api.deletePassenger(passengerId).subscribe({
+    // re-authentication before performing delete
+    this.pendingDeleteId = passengerId;
+    this.showReauth = true;
+  }
+
+  // Triggered when re-authentication succeeds
+  onReauthSuccess() {
+    this.showReauth = false;
+
+    if (!this.pendingDeleteId) return;
+
+    this.api.deletePassenger(this.pendingDeleteId).subscribe({
       next: () => {
-        // Avoid raw backend JSON (i will improve info disclosure later)
-        this.result = `Passenger with ID ${passengerId} deleted successfully.`;
+        this.result = `Passenger with ID ${this.pendingDeleteId} deleted successfully.`;
+        this.pendingDeleteId = null;
       },
       error: err => {
         this.result = 'Error deleting passenger: ' + err.message;
+        this.pendingDeleteId = null;
       }
     });
+  }
+
+  // Called if re-auth is cancelled
+  onReauthCancel() {
+    this.showReauth = false;
+    this.pendingDeleteId = null;
+    alert('Re-authentication cancelled.');
   }
 }

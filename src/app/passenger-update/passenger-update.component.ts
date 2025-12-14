@@ -2,25 +2,29 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PassengerService, Passenger } from '../passenger.service';
+import { AuthService } from '../auth.service';
+import { ReauthComponent } from '../reauth.component';
 
 @Component({
   selector: 'app-passenger-update',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReauthComponent],
   templateUrl: './passenger-update.component.html',
   styleUrls: ['./passenger-update.component.css']
 })
 export class PassengerUpdateComponent {
 
-  // Vulnerability: User input not validated or sanitized
   id: string = '';
-  passenger: Passenger | null = null;  // <-- typed properly
+  passenger: Passenger | null = null;
   response: any = '';
 
-  constructor(private api: PassengerService) {}
+  // Re-auth state
+  showReauth: boolean = false;
+  pendingUpdateId: number | null = null;
+
+  constructor(private api: PassengerService, private auth: AuthService) {}
 
   search() {
-    // Injection Fix: Validate numeric input before backend call
     const passengerId = Number(this.id);
 
     if (!passengerId || passengerId <= 0 || isNaN(passengerId)) {
@@ -29,11 +33,10 @@ export class PassengerUpdateComponent {
     }
 
     this.api.searchPassenger(passengerId).subscribe({
-      next: (res: Passenger) => {   // <-- typed as Passenger
+      next: (res: Passenger) => {
         if (res) {
-          // Prevents binding unsanitized objects
           this.passenger = {
-            PassengerId: passengerId,  // include ID
+            PassengerId: passengerId,
             FullName: res.FullName,
             PassportNumber: res.PassportNumber,
             VisaType: res.VisaType,
@@ -47,9 +50,7 @@ export class PassengerUpdateComponent {
           alert('No passenger found with this ID.');
         }
       },
-      error: (err: any) => {
-        alert('Error fetching passenger: ' + err.message);
-      }
+      error: (err: any) => alert('Error fetching passenger: ' + err.message)
     });
   }
 
@@ -65,7 +66,22 @@ export class PassengerUpdateComponent {
       return;
     }
 
-    // Sanitize input fields before sending
+    // Save passengerId for reauth scope
+    this.pendingUpdateId = passengerId;
+
+    // Show re-auth modal
+    this.showReauth = true;
+  }
+
+  // Called after successful reauthentication
+  onReauthSuccess() {
+    this.showReauth = false;
+
+    if (!this.pendingUpdateId || !this.passenger) {
+      alert('User session invalid. Please login again.');
+      return;
+    }
+
     const safePassenger: Partial<Passenger> = {
       FullName: this.passenger.FullName?.trim(),
       PassportNumber: this.passenger.PassportNumber?.trim(),
@@ -77,7 +93,6 @@ export class PassengerUpdateComponent {
       OfficerId: Number(this.passenger.OfficerId)
     };
 
-    // Validate numeric fields
     if (isNaN(safePassenger.ArrivalYear!) || safePassenger.ArrivalYear! < 1900 || safePassenger.ArrivalYear! > 2100) {
       alert('Arrival year must be between 1900 and 2100.');
       return;
@@ -88,14 +103,19 @@ export class PassengerUpdateComponent {
       return;
     }
 
-    // Safe API call
-    this.api.updatePassenger(passengerId, safePassenger).subscribe({
-      next: () => {
-        this.response = 'Passenger updated successfully.';
-      },
-      error: (err: any) => {
-        this.response = 'Error updating passenger: ' + err.message;
-      }
+    const updateId = this.pendingUpdateId;
+    this.pendingUpdateId = null;
+
+    this.api.updatePassenger(updateId, safePassenger).subscribe({
+      next: () => this.response = 'Passenger updated successfully.',
+      error: (err: any) => this.response = 'Error updating passenger: ' + err.message
     });
+  }
+
+  // Called if user cancels reauthentication
+  onReauthCancel() {
+    this.showReauth = false;
+    this.pendingUpdateId = null;
+    alert('Re-authentication cancelled.');
   }
 }

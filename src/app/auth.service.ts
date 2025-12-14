@@ -16,19 +16,12 @@ export class AuthService {
   login(username: string, password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/login`, { username, password }).pipe(
       tap((res: any) => {
-        if (res?.token) {
-          localStorage.setItem(this.tokenKey, res.token);
-        }
-
-        // store role if backend includes it in response payload
-        if (res?.role) {
-          localStorage.setItem(this.roleKey, res.role);
-        } else {
-          // fallback: decode token to extract role claim
+        if (res?.token) localStorage.setItem(this.tokenKey, res.token);
+        if (res?.role) localStorage.setItem(this.roleKey, res.role);
+        else {
           try {
             const payload = JSON.parse(atob(res.token.split('.')[1]));
-            const decodedRole =
-              payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+            const decodedRole = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
             if (decodedRole) localStorage.setItem(this.roleKey, decodedRole);
           } catch {}
         }
@@ -36,41 +29,31 @@ export class AuthService {
     );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+  // --- method for reauthentication ---
+  reauthenticate(username: string, password: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, { username, password }).pipe(
+      tap((res: any) => {
+        if (res?.token) localStorage.setItem(this.tokenKey, res.token);
+      })
+    );
   }
 
-  getRole(): string | null {
-    return localStorage.getItem(this.roleKey);
-  }
+  getToken(): string | null { return localStorage.getItem(this.tokenKey); }
+  getRole(): string | null { return localStorage.getItem(this.roleKey); }
+  logout() { localStorage.removeItem(this.tokenKey); localStorage.removeItem(this.roleKey); }
+  isAuthenticated(): boolean { return !!this.getToken(); }
 
-  logout() {
-    localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem(this.roleKey);
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.getToken();
-  }
-
-  /* Decode JWT to get username and role */
   getUser(): any {
     const token = this.getToken();
     if (!token) return null;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return {
-        username:
-          payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
-        role:
-          payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+        username: payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+        role: payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
       };
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }
 
-  isAdmin(): boolean {
-    return this.getRole() === 'Admin';
-  }
+  isAdmin(): boolean { return this.getRole() === 'Admin'; }
 }

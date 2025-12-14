@@ -1,0 +1,13 @@
+<div class="reauth-popup">
+  <h3>Re-enter your password to continue</h3>
+  <input
+    type="password"
+    [(ngModel)]="password"
+    placeholder="Password"
+    required
+  />
+  <div class="buttons">
+    <button (click)="confirm()">Confirm</button>
+    <button (click)="cancel()">Cancel</button>
+  </div>
+</div>

@@ -1,5 +1,12 @@
 <h2>Delete Passenger</h2>
 
+<!--reauth  only when required -->
+<app-reauth
+  *ngIf="showReauth"
+  (reauthSuccess)="onReauthSuccess()"
+  (reauthCancel)="onReauthCancel()"
+></app-reauth>
+
 <!-- Injection fix: added numeric field with validation -->
 <input
   type="number"
@@ -9,7 +16,7 @@
   required
 />
 
-<!-- Vulnerability: Deletes without confirmation -->
+<!-- Confirmation via re-auth -->
 <button (click)="delete(id.value)">Delete</button>
 
 <!-- Safer response message -->

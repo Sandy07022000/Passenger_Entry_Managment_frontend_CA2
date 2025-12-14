@@ -1,5 +1,12 @@
 <h2>Create Passenger</h2>
 
+<!--shows popup when reauth is triggered -->
+<app-reauth
+  *ngIf="showReauth"
+  (reauthSuccess)="onReauthSuccess()"
+  (reauthCancel)="onReauthCancel()"
+></app-reauth>
+  
 <form #createForm="ngForm" (ngSubmit)="create()" novalidate>
 
   <label>Full Name</label>
