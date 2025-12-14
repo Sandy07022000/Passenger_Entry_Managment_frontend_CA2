@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { PassengerService } from '../passenger.service';
 import { ReauthComponent } from '../reauth.component';
 import { AuthService } from '../auth.service';
@@ -13,27 +13,27 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./passenger-delete.component.css']
 })
 export class PassengerDeleteComponent {
-  result: any = "";
+  passengerId: number | null = null;
+  result: string = '';
   showReauth: boolean = false;
   pendingDeleteId: number | null = null;
 
   constructor(private api: PassengerService, private auth: AuthService) {}
 
-  delete(id: string) {
-    const passengerId = Number(id);
-
-    if (!passengerId || passengerId <= 0 || isNaN(passengerId)) {
-      alert('Please enter a valid numeric Passenger ID.');
+  delete(deleteForm: NgForm) {
+    if (!this.passengerId || this.passengerId <= 0) {
+      this.result = 'Please enter a valid numeric Passenger ID.';
       return;
     }
 
     // re-authentication before performing delete
-    this.pendingDeleteId = passengerId;
+    this.pendingDeleteId = this.passengerId;
     this.showReauth = true;
+    this.result = ''; // clear old messages
   }
 
   // Triggered when re-authentication succeeds
-  onReauthSuccess() {
+  onReauthSuccess(deleteForm: NgForm) {
     this.showReauth = false;
 
     if (!this.pendingDeleteId) return;
@@ -42,8 +42,9 @@ export class PassengerDeleteComponent {
       next: () => {
         this.result = `Passenger with ID ${this.pendingDeleteId} deleted successfully.`;
         this.pendingDeleteId = null;
+        deleteForm.resetForm(); 
       },
-      error: err => {
+      error: (err) => {
         this.result = 'Error deleting passenger: ' + err.message;
         this.pendingDeleteId = null;
       }
@@ -51,9 +52,10 @@ export class PassengerDeleteComponent {
   }
 
   // Called if re-auth is cancelled
-  onReauthCancel() {
+  onReauthCancel(deleteForm: NgForm) {
     this.showReauth = false;
     this.pendingDeleteId = null;
-    alert('Re-authentication cancelled.');
+    deleteForm.resetForm(); 
+    this.result = ''; // 
   }
 }

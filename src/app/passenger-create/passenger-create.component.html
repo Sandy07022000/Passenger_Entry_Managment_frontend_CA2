@@ -3,31 +3,32 @@
 <!--shows popup when reauth is triggered -->
 <app-reauth
   *ngIf="showReauth"
-  (reauthSuccess)="onReauthSuccess()"
+  (reauthSuccess)="onReauthSuccess(createForm)"
   (reauthCancel)="onReauthCancel()"
 ></app-reauth>
-  
-<form #createForm="ngForm" (ngSubmit)="create()" novalidate>
 
+<form #createForm="ngForm" (ngSubmit)="create(createForm)" novalidate>
   <label>Full Name</label>
   <input
     [(ngModel)]="fullName"
+    #fullNameRef="ngModel"
     name="fullName"
     required
     maxlength="100"
     placeholder="Full Name" />
-  <div *ngIf="createForm.submitted && !fullName" class="error-msg">
+  <div *ngIf="fullNameRef.invalid && (fullNameRef.touched || fullNameRef.dirty)" class="error-msg">
     Full Name is required.
   </div>
 
   <label>Passport Number</label>
   <input
     [(ngModel)]="passportNumber"
+    #passportRef="ngModel"
     name="passportNumber"
     required
     maxlength="20"
     placeholder="Passport Number" />
-  <div *ngIf="createForm.submitted && !passportNumber" class="error-msg">
+  <div *ngIf="passportRef.invalid && (passportRef.touched || passportRef.dirty)" class="error-msg">
     Passport Number is required.
   </div>
 
@@ -54,14 +55,13 @@
   <label>Arrival Year</label>
   <input
     [(ngModel)]="arrivalYear"
+    #yearRef="ngModel"
     name="arrivalYear"
     type="number"
     min="1900"
     max="2100"
     placeholder="Arrival Year" />
-  <div
-    *ngIf="createForm.submitted && (+arrivalYear < 1900 || +arrivalYear > 2100)"
-    class="error-msg">
+  <div *ngIf="yearRef.invalid && (yearRef.touched || yearRef.dirty)" class="error-msg">
     Arrival Year must be between 1900 and 2100.
   </div>
 
@@ -75,13 +75,12 @@
   <label>Officer ID</label>
   <input
     [(ngModel)]="officerId"
+    #officerRef="ngModel"
     name="officerId"
     type="number"
     min="1"
     placeholder="Officer ID" />
-  <div
-    *ngIf="createForm.submitted && (!officerId || +officerId < 1)"
-    class="error-msg">
+  <div *ngIf="officerRef.invalid && (officerRef.touched || officerRef.dirty)" class="error-msg">
     Officer ID must be a valid number greater than 0.
   </div>
 

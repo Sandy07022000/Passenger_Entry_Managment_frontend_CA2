@@ -2,18 +2,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 90vh;
+  height: 95vh; 
   background: linear-gradient(135deg, #74b9ff, #a29bfe);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-card {
   background: #fff;
-  padding: 30px 40px;
+  padding: 50px 40px; 
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
   width: 100%;
-  max-width: 380px;
+  max-width: 700px;
   text-align: center;
   animation: fadeIn 0.8s ease-in-out;
 }
@@ -61,7 +61,7 @@ input:focus {
   background-color: #0984e3;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 12px; 
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;

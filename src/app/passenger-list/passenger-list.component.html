@@ -1,9 +1,13 @@
 <h2>Passenger List</h2>
 
+<form #listForm="ngForm" (ngSubmit)="loadPassengers(listForm)">
+  <button type="submit">Load Passengers</button>
+</form>
+
 <p *ngIf="message" class="error">{{ message }}</p>
 
 <!-- Injection safe now -->
-<table *ngIf="passengers.length > 0; else noData">
+<table *ngIf="passengers.length > 0">
   <thead>
     <tr>
       <th>ID</th>
@@ -31,7 +35,3 @@
     </tr>
   </tbody>
 </table>
-
-<ng-template #noData>
-  <p>No passengers found.</p>
-</ng-template>

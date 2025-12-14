@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { PassengerService, Passenger } from '../passenger.service';
 
 @Component({
@@ -17,16 +17,21 @@ export class PassengerSearchComponent {
 
   constructor(private passengerService: PassengerService) {}
 
-  search() {
-    if (!this.passengerId) {
-      this.message = 'Please enter a Passenger ID.';
+  search(searchForm: NgForm) {
+    if (!this.passengerId || this.passengerId <= 0) {
+      this.message = 'Please enter a valid Passenger ID.';
+      this.passenger = undefined;
       return;
     }
+
+    this.message = '';
+    this.passenger = undefined;
 
     this.passengerService.get(this.passengerId).subscribe({
       next: (data) => {
         this.passenger = data;
         this.message = '';
+        searchForm.resetForm({});
       },
       error: (err) => {
         this.passenger = undefined;

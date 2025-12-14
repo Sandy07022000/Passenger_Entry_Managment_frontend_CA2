@@ -1,23 +1,28 @@
 <h2>Delete Passenger</h2>
 
 <!--reauth  only when required -->
-<app-reauth
-  *ngIf="showReauth"
-  (reauthSuccess)="onReauthSuccess()"
-  (reauthCancel)="onReauthCancel()"
-></app-reauth>
+<app-reauth *ngIf="showReauth"
+            (reauthSuccess)="onReauthSuccess(deleteForm)"
+            (reauthCancel)="onReauthCancel(deleteForm)"></app-reauth>
 
 <!-- Injection fix: added numeric field with validation -->
-<input
-  type="number"
-  min="1"
-  placeholder="Passenger ID"
-  #id
-  required
-/>
+<form #deleteForm="ngForm" (ngSubmit)="delete(deleteForm)">
+  <!-- Passenger ID input bound with ngModel -->
+  <input type="number"
+         min="1"
+         placeholder="Passenger ID"
+         [(ngModel)]="passengerId"
+         name="passengerId"
+         #passengerRef="ngModel"
+         required />
 
-<!-- Confirmation via re-auth -->
-<button (click)="delete(id.value)">Delete</button>
+  <div *ngIf="passengerRef.invalid && (passengerRef.dirty || passengerRef.touched)" class="error-msg">
+    Please enter a valid numeric Passenger ID.
+  </div>
+
+  <!-- Delete button triggers delete method -->
+  <button type="submit">Delete</button>
+</form>
 
 <!-- Safer response message -->
 <p *ngIf="result">{{ result }}</p>

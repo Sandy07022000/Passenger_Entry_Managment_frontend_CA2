@@ -1,9 +1,18 @@
 <h2>Search Passenger</h2>
 
-<!-- Injection Fix: Input restricted to numbers only -->
+<form #searchForm="ngForm" (ngSubmit)="search(searchForm)">
+  <input [(ngModel)]="passengerId"
+         type="number"
+         name="passengerId"
+         placeholder="Passenger ID"
+         #passengerRef="ngModel"
+         required />
+  <div *ngIf="passengerRef.invalid && (passengerRef.dirty || passengerRef.touched)" class="error-msg">
+    Please enter a valid Passenger ID.
+  </div>
 
-<input [(ngModel)]="passengerId" type="number" placeholder="Passenger ID" />
-<button (click)="search()">Search</button>
+  <button type="submit">Search</button>
+</form>
 
 <p *ngIf="message" class="error">{{ message }}</p>
 
